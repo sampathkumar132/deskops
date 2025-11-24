@@ -1,11 +1,11 @@
-// src/pages/MyTasks.jsx
 import React, { useState, useMemo } from "react";
 import projects from "../sampleData/projects.json";
 import projectTasks from "../sampleData/subTasks.json";
+import DragDropFile from "../components/DragDropFile";
 
 const json = localStorage.getItem("auth");
 const authData = json ? JSON.parse(json) : null;
-const CURRENT_USER = authData ? authData.username : null; // or take from auth/localStorage
+const CURRENT_USER = authData ? authData.username : null;
 
 function statusChipClass(status) {
   switch (status) {
@@ -93,11 +93,9 @@ function MyTasks() {
     // filter
     results = results.filter((t) => {
       const project = projectById.get(t.projectId);
-      const matchesStatus =
-        statusFilter === "All" || t.status === statusFilter;
+      const matchesStatus = statusFilter === "All" || t.status === statusFilter;
       const matchesProject =
-        projectFilter === "All" ||
-        (project && project.name === projectFilter);
+        projectFilter === "All" || (project && project.name === projectFilter);
       const matchesPriority =
         priorityFilter === "All" || t.priority === priorityFilter;
       return matchesStatus && matchesProject && matchesPriority;
@@ -106,9 +104,6 @@ function MyTasks() {
     // sort
     results.sort((a, b) => {
       const { key, direction } = sortConfig;
-
-      const projectA = projectById.get(a.projectId);
-      const projectB = projectById.get(b.projectId);
 
       const getValue = (task) => {
         switch (key) {
@@ -169,18 +164,14 @@ function MyTasks() {
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-lg font-semibold text-slate-900">
-              My Tasks
-            </h1>
+            <h1 className="text-lg font-semibold text-slate-900">My Tasks</h1>
             <p className="text-xs text-slate-500">
               Tasks assigned to you across all projects.
             </p>
           </div>
           <span className="text-xs text-slate-500">
             Logged in as{" "}
-            <span className="font-medium text-slate-700">
-              {currentUser}
-            </span>
+            <span className="font-medium text-slate-700">{currentUser}</span>
           </span>
         </div>
 
@@ -294,12 +285,8 @@ function MyTasks() {
                       setActiveTab("details");
                     }}
                   >
-                    <td className="px-3 py-2 text-slate-500">
-                      {task.key}
-                    </td>
-                    <td className="px-3 py-2 text-slate-900">
-                      {task.title}
-                    </td>
+                    <td className="px-3 py-2 text-slate-500">{task.key}</td>
+                    <td className="px-3 py-2 text-slate-900">{task.title}</td>
                     <td className="px-3 py-2 text-slate-700 text-xs">
                       {project ? project.name : "—"}
                     </td>
@@ -370,9 +357,7 @@ function MyTasks() {
           <p className="text-xs text-slate-500 mb-1">
             {task.key} · {project ? project.name : "Unknown project"}
           </p>
-          <h1 className="text-xl font-semibold text-slate-900">
-            {task.title}
-          </h1>
+          <h1 className="text-xl font-semibold text-slate-900">{task.title}</h1>
         </div>
 
         {/* Tabs */}
@@ -417,9 +402,36 @@ function MyTasks() {
           )}
 
           {activeTab === "comments" && (
-            <p className="text-sm text-slate-500">
-              Comments UI can go here.
-            </p>
+            <div className="space-y-4">
+              {/* Comment Input */}
+              <div>
+                <textarea
+                  className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-1 focus:ring-sky-500 focus:border-sky-500"
+                  rows="3"
+                  placeholder="Add a comment..."
+                ></textarea>
+              </div>
+
+              {/* Attach Files */}
+              <div>
+                <h3 className="text-xs font-semibold text-slate-600 mb-1">
+                  Attach files
+                </h3>
+
+                {/* DragDropFile Component */}
+                <DragDropFile
+                  onFilesSelected={(files) => {
+                    console.log("Files attached:", files);
+                    // You can save files to localStorage or state here
+                  }}
+                />
+              </div>
+
+              {/* Submit Button */}
+              <button className="px-4 py-2 bg-sky-600 text-white rounded-lg text-sm hover:bg-sky-700">
+                Post Comment
+              </button>
+            </div>
           )}
 
           {activeTab === "history" && (
