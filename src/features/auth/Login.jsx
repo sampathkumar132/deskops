@@ -1,5 +1,5 @@
 // src/features/auth/Login.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import users from "../../sampleData/users.json";
 
@@ -10,15 +10,20 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  const auth = JSON.parse(localStorage.getItem("auth"));
-  if (auth?.role === "admin") navigate("/admin");
-  if (auth?.role === "user") navigate("/user");
+  // Redirect if already logged in
+  useEffect(() => {
+    const auth = JSON.parse(localStorage.getItem("auth"));
+    if (auth?.role === "admin") navigate("/admin");
+    if (auth?.role === "user") navigate("/user");
+  }, [navigate]);
 
   const handleLogin = (e) => {
     e.preventDefault();
 
     const foundUser = users.find(
-      (u) => u.username === username && u.password === password
+      (u) =>
+        u.username.trim().toLowerCase() === username.trim().toLowerCase() &&
+        u.password === password
     );
 
     if (!foundUser) {
@@ -26,9 +31,17 @@ export default function Login() {
       return;
     }
 
-    localStorage.setItem("auth", JSON.stringify(foundUser));
+    // Store clean normalized data
+    const authData = {
+      username: foundUser.username,
+      role: foundUser.role.toLowerCase().trim(),
+    };
 
-    if (foundUser.role === "admin") navigate("/admin");
+    localStorage.setItem("auth", JSON.stringify(authData));
+    localStorage.setItem("role", authData.role); // Sidebar uses this
+
+    // Redirect based on role
+    if (authData.role === "admin") navigate("/admin");
     else navigate("/user");
   };
 

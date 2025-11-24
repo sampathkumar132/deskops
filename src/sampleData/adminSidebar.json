@@ -1,0 +1,22 @@
+[
+  {
+    "label": "Dashboard",
+    "icon": "HomeIcon",
+    "path": "/admin/dashboard"
+  },
+  {
+    "label": "Manage Users",
+    "icon": "UsersIcon",
+    "path": "/admin/users"
+  },
+  {
+    "label": "Teams",
+    "icon": "UserGroupIcon",
+    "path": "/admin/teams"
+  },
+  {
+    "label": "Settings",
+    "icon": "Cog6ToothIcon",
+    "path": "/admin/settings"
+  }
+]

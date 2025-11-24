@@ -1,0 +1,22 @@
+[
+  {
+    "label": "My Dashboard",
+    "icon": "HomeIcon",
+    "path": "/user"
+  },
+  {
+    "label": "My Tasks",
+    "icon": "UsersIcon",
+    "path": "/user/tasks"
+  },
+  {
+    "label": "Notifications",
+    "icon": "UserGroupIcon",
+    "path": "/user/notifications"
+  },
+  {
+    "label": "Profile Settings",
+    "icon": "Cog6ToothIcon",
+    "path": "/user/settings"
+  }
+]
