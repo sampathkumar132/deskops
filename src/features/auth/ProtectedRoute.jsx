@@ -1,15 +1,20 @@
-import { Navigate } from "react-router-dom";
+// src/features/auth/ProtectedRoute.jsx
+import React from "react";
+import { Navigate, Outlet } from "react-router-dom";
 
-export default function ProtectedRoute({ children, requiredRole }) {
-  const auth = JSON.parse(localStorage.getItem("auth"));
+function ProtectedRoute({ requiredRole }) {
+  // however you store role after login:
+  const storedRole = localStorage.getItem("role"); // "admin" or "user"
 
-  // Not logged in → go to Login
-  if (!auth) return <Navigate to="/" />;
-
-  // Logged in but role doesn't match
-  if (requiredRole && auth.role !== requiredRole) {
-    return <Navigate to="/" />;
+  if (!storedRole) {
+    return <Navigate to="/" replace />;
   }
 
-  return children;
+  if (requiredRole && storedRole !== requiredRole) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Outlet />;
 }
+
+export default ProtectedRoute;

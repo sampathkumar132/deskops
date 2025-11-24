@@ -4,15 +4,16 @@
     "icon": "HomeIcon",
     "path": "/user"
   },
+  
+  {
+    "label": "All Projects",
+    "icon": "UserGroupIcon",
+    "path": "/user/projects"
+  },
   {
     "label": "My Tasks",
     "icon": "UsersIcon",
-    "path": "/user/tasks"
-  },
-  {
-    "label": "Notifications",
-    "icon": "UserGroupIcon",
-    "path": "/user/notifications"
+    "path": "/user/mytasks"
   },
   {
     "label": "Profile Settings",

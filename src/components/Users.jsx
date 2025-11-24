@@ -14,7 +14,7 @@ import {
 function Users({ usersData }) {
   const [employees, setEmployees] = useState(usersData);
   const [page, setPage] = useState(1);
-  const rowsPerPage = 10;
+  const rowsPerPage = 5;
 
   const totalPages = Math.max(1, Math.ceil(employees.length / rowsPerPage));
   const startIndex = (page - 1) * rowsPerPage;

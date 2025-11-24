@@ -22,5 +22,181 @@
     "joinDate": "16/07/2025",
     "department": "Development",
     "fullTime": true
+  },
+  {
+    "id": 4,
+    "name": "Amelia Foster",
+    "age": 29,
+    "joinDate": "02/08/2025",
+    "department": "HR",
+    "fullTime": true
+  },
+  {
+    "id": 5,
+    "name": "Liam Henderson",
+    "age": 33,
+    "joinDate": "11/06/2025",
+    "department": "Finance",
+    "fullTime": false
+  },
+  {
+    "id": 6,
+    "name": "Sophie Turner",
+    "age": 27,
+    "joinDate": "25/05/2025",
+    "department": "Design",
+    "fullTime": true
+  },
+  {
+    "id": 7,
+    "name": "Marcus Lee",
+    "age": 41,
+    "joinDate": "08/02/2025",
+    "department": "Operations",
+    "fullTime": true
+  },
+  {
+    "id": 8,
+    "name": "Hannah Collins",
+    "age": 23,
+    "joinDate": "04/09/2025",
+    "department": "Development",
+    "fullTime": false
+  },
+  {
+    "id": 9,
+    "name": "Joshua Carter",
+    "age": 38,
+    "joinDate": "22/04/2025",
+    "department": "Market",
+    "fullTime": true
+  },
+  {
+    "id": 10,
+    "name": "Ava Mitchell",
+    "age": 31,
+    "joinDate": "13/03/2025",
+    "department": "Support",
+    "fullTime": true
+  },
+  {
+    "id": 11,
+    "name": "Noah Ramirez",
+    "age": 26,
+    "joinDate": "18/07/2025",
+    "department": "Development",
+    "fullTime": true
+  },
+  {
+    "id": 12,
+    "name": "Lily Armstrong",
+    "age": 30,
+    "joinDate": "07/01/2025",
+    "department": "HR",
+    "fullTime": false
+  },
+  {
+    "id": 13,
+    "name": "Ethan Brooks",
+    "age": 22,
+    "joinDate": "29/06/2025",
+    "department": "Design",
+    "fullTime": true
+  },
+  {
+    "id": 14,
+    "name": "Natalie Scott",
+    "age": 35,
+    "joinDate": "14/05/2025",
+    "department": "Finance",
+    "fullTime": true
+  },
+  {
+    "id": 15,
+    "name": "Oliver Walsh",
+    "age": 28,
+    "joinDate": "01/03/2025",
+    "department": "Support",
+    "fullTime": false
+  },
+  {
+    "id": 16,
+    "name": "Grace Powell",
+    "age": 24,
+    "joinDate": "09/02/2025",
+    "department": "Development",
+    "fullTime": true
+  },
+  {
+    "id": 17,
+    "name": "Henry Adams",
+    "age": 40,
+    "joinDate": "19/01/2025",
+    "department": "Operations",
+    "fullTime": true
+  },
+  {
+    "id": 18,
+    "name": "Ella Morgan",
+    "age": 32,
+    "joinDate": "05/04/2025",
+    "department": "Market",
+    "fullTime": false
+  },
+  {
+    "id": 19,
+    "name": "Samuel King",
+    "age": 21,
+    "joinDate": "30/07/2025",
+    "department": "Design",
+    "fullTime": true
+  },
+  {
+    "id": 20,
+    "name": "Victoria Lane",
+    "age": 37,
+    "joinDate": "23/03/2025",
+    "department": "HR",
+    "fullTime": true
+  },
+  {
+    "id": 21,
+    "name": "Daniel Harris",
+    "age": 34,
+    "joinDate": "12/06/2025",
+    "department": "Finance",
+    "fullTime": false
+  },
+  {
+    "id": 22,
+    "name": "Zoe Patterson",
+    "age": 20,
+    "joinDate": "01/08/2025",
+    "department": "Development",
+    "fullTime": true
+  },
+  {
+    "id": 23,
+    "name": "Michael Turner",
+    "age": 42,
+    "joinDate": "10/02/2025",
+    "department": "Operations",
+    "fullTime": true
+  },
+  {
+    "id": 24,
+    "name": "Chloe Bennett",
+    "age": 27,
+    "joinDate": "15/06/2025",
+    "department": "Support",
+    "fullTime": false
+  },
+  {
+    "id": 25,
+    "name": "Ryan Matthews",
+    "age": 33,
+    "joinDate": "28/04/2025",
+    "department": "Market",
+    "fullTime": true
   }
 ]
