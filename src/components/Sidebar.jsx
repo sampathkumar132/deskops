@@ -1,5 +1,7 @@
 // src/components/Sidebar.jsx
 import React from "react";
+import { NavLink } from "react-router-dom";
+
 import {
   HomeIcon,
   UsersIcon,
@@ -8,47 +10,59 @@ import {
 } from "@heroicons/react/24/outline";
 
 function Sidebar({ isCollapsed }) {
+  const baseItem =
+    "flex items-center px-2 py-2 rounded-lg cursor-pointer transition-colors";
+  const activeStyle = "bg-slate-800 text-white";
+  const inactiveStyle = "text-slate-200 hover:bg-slate-800";
+
   return (
     <aside
-      style={{ color: "#ffffff" }} // ← force all text inside to white
       className={`
-        h-full p-3 md:p-4 flex flex-col space-y-3
-        bg-slate-900 border-r border-slate-800
-        transition-all duration-300
+        h-full p-4 flex flex-col space-y-3
+        bg-slate-900 text-white
         ${isCollapsed ? "w-16" : "w-56"}
+        transition-all duration-300
       `}
     >
-      {/* Dashboard */}
-      <div className="flex items-center px-2 py-2 rounded-lg cursor-pointer hover:bg-slate-800">
-        <HomeIcon className="h-6 w-6" color="#ffffff" /> {/* ← icon white */}
-        {!isCollapsed && (
-          <span className="ml-3 text-sm font-medium">Dashboard</span>
-        )}
-      </div>
+      <NavLink
+        to="/admin/dashboard"
+        className={({ isActive }) =>
+          `${baseItem} ${isActive ? activeStyle : inactiveStyle}`
+        }
+      >
+        <HomeIcon className="h-6 w-6" />
+        {!isCollapsed && <span className="ml-3">Dashboard</span>}
+      </NavLink>
 
-      {/* Manage Users */}
-      <div className="flex items-center px-2 py-2 rounded-lg cursor-pointer hover:bg-slate-800">
-        <UsersIcon className="h-6 w-6" color="#ffffff" />
-        {!isCollapsed && (
-          <span className="ml-3 text-sm font-medium">Manage Users</span>
-        )}
-      </div>
+      <NavLink
+        to="/admin/users"
+        className={({ isActive }) =>
+          `${baseItem} ${isActive ? activeStyle : inactiveStyle}`
+        }
+      >
+        <UsersIcon className="h-6 w-6" />
+        {!isCollapsed && <span className="ml-3">Manage Users</span>}
+      </NavLink>
 
-      {/* Teams */}
-      <div className="flex items-center px-2 py-2 rounded-lg cursor-pointer hover:bg-slate-800">
-        <UserGroupIcon className="h-6 w-6" color="#ffffff" />
-        {!isCollapsed && (
-          <span className="ml-3 text-sm font-medium">Teams</span>
-        )}
-      </div>
+      <NavLink
+        to="/admin/teams"
+        className={({ isActive }) =>
+          `${baseItem} ${isActive ? activeStyle : inactiveStyle}`
+        }
+      >
+        <UserGroupIcon className="h-6 w-6" />
+        {!isCollapsed && <span className="ml-3">Teams</span>}
+      </NavLink>
 
-      {/* Settings */}
-      <div className="flex items-center px-2 py-2 rounded-lg cursor-pointer hover:bg-slate-800">
-        <Cog6ToothIcon className="h-6 w-6" color="#ffffff" />
-        {!isCollapsed && (
-          <span className="ml-3 text-sm font-medium">Settings</span>
-        )}
-      </div>
+      <NavLink
+        to="/admin/settings"
+        className={({ isActive }) =>
+          `${baseItem} ${isActive ? activeStyle : inactiveStyle}`
+        }
+      >
+        <Cog6ToothIcon className="h-6 w-6" />
+        {!isCollapsed && <span className="ml-3">Settings</span>}
+      </NavLink>
     </aside>
   );
 }

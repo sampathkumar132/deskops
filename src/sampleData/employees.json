@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Edward Perry",
+    "age": 25,
+    "joinDate": "16/07/2025",
+    "department": "Finance",
+    "fullTime": true
+  },
+  {
+    "id": 2,
+    "name": "Josephine Drake",
+    "age": 36,
+    "joinDate": "16/07/2025",
+    "department": "Market",
+    "fullTime": false
+  },
+  {
+    "id": 3,
+    "name": "Cody Phillips",
+    "age": 19,
+    "joinDate": "16/07/2025",
+    "department": "Development",
+    "fullTime": true
+  }
+]
