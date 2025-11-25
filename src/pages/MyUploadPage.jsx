@@ -5,7 +5,7 @@ export default function MyUploadPage() {
     console.log("Files received:", files);
 
     // Example:
-    // Save to localStorage, IndexedDB, or state
+    // Save to sessionStorage, IndexedDB, or state
   };
 
   return (

@@ -23,12 +23,12 @@ function Sidebar({ isCollapsed }) {
   const [menu, setMenu] = useState([]);
 
   useEffect(() => {
-    let role = localStorage.getItem("role");
+    let role = sessionStorage.getItem("role");
 
     // Fix: wait until login writes role
     if (!role) {
       const timer = setTimeout(() => {
-        role = localStorage.getItem("role");
+        role = sessionStorage.getItem("role");
 
         if (role === "admin") {
           setMenu(adminSidebar);
@@ -75,9 +75,7 @@ function Sidebar({ isCollapsed }) {
             }
           >
             <Icon className="h-6 w-6" />
-            {!isCollapsed && (
-              <span className="ml-3 text-sm">{item.label}</span>
-            )}
+            {!isCollapsed && <span className="ml-3 text-sm">{item.label}</span>}
           </NavLink>
         );
       })}

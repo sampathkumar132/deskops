@@ -1,12 +1,11 @@
+// src/pages/MyTasks.jsx  (or wherever you keep it)
 import React, { useState, useMemo } from "react";
-import projects from "../sampleData/projects.json";
-import projectTasks from "../sampleData/subTasks.json";
+import sampleProjects from "../sampleData/projects.json";
+import sampleProjectTasks from "../sampleData/subTasks.json";
 import DragDropFile from "../components/DragDropFile";
+import { getAuth } from "../features/auth/auth";
 
-const json = localStorage.getItem("auth");
-const authData = json ? JSON.parse(json) : null;
-const CURRENT_USER = authData ? authData.username : null;
-
+/* helpers for classes (unchanged) */
 function statusChipClass(status) {
   switch (status) {
     case "WAITING FOR SUPPORT":
@@ -36,10 +35,19 @@ function priorityClass(priority) {
   }
 }
 
-function MyTasks() {
-  const [selectedTask, setSelectedTask] = useState(null);
+function safeParseJSON(raw, fallback) {
+  try {
+    if (!raw) return fallback;
+    return JSON.parse(raw);
+  } catch (err) {
+    console.warn("Failed to parse JSON from storage:", err);
+    return fallback;
+  }
+}
 
-  // list view state
+function MyTasks() {
+  // selected task + UI state
+  const [selectedTask, setSelectedTask] = useState(null);
   const [sortConfig, setSortConfig] = useState({
     key: "key",
     direction: "asc",
@@ -47,32 +55,43 @@ function MyTasks() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [projectFilter, setProjectFilter] = useState("All");
   const [priorityFilter, setPriorityFilter] = useState("All");
-
-  // details view tab
   const [activeTab, setActiveTab] = useState("details");
 
-  const currentUser = useMemo(
-    () => localStorage.getItem("username") || CURRENT_USER,
-    []
-  );
+  // --- load auth safely (from your helper)
+  const auth = getAuth();
+  const currentUser = auth?.username ?? "Guest";
 
+  // --- load projects & tasks either from sessionStorage or fallback to sample data
+  const projects = useMemo(() => {
+    const raw = sessionStorage.getItem("projects");
+    return safeParseJSON(raw, sampleProjects);
+  }, []);
+
+  const projectTasks = useMemo(() => {
+    const raw = sessionStorage.getItem("projectTasks"); // use this key if you store tasks
+    return safeParseJSON(raw, sampleProjectTasks);
+  }, []);
+
+  // build lookup map for projects
   const projectById = useMemo(() => {
     const map = new Map();
     projects.forEach((p) => map.set(p.id, p));
     return map;
-  }, []);
+  }, [projects]);
 
-  // tasks for current user
+  // tasks assigned to current user
   const myTasks = useMemo(
-    () => projectTasks.filter((t) => t.assignee === currentUser),
-    [currentUser]
+    () =>
+      projectTasks.filter((t) => String(t.assignee) === String(currentUser)),
+    [projectTasks, currentUser]
   );
 
-  // options for filters (from data)
+  // filter options derived from myTasks
   const statusOptions = useMemo(
     () => ["All", ...Array.from(new Set(myTasks.map((t) => t.status)))],
     [myTasks]
   );
+
   const projectOptions = useMemo(() => {
     const projectIds = Array.from(new Set(myTasks.map((t) => t.projectId)));
     const names = projectIds
@@ -81,16 +100,17 @@ function MyTasks() {
       .map((p) => p.name);
     return ["All", ...names];
   }, [myTasks, projectById]);
+
   const priorityOptions = useMemo(
     () => ["All", ...Array.from(new Set(myTasks.map((t) => t.priority)))],
     [myTasks]
   );
 
-  // apply filters + sorting
+  // processed tasks: filtering + sorting
   const processedTasks = useMemo(() => {
     let results = [...myTasks];
 
-    // filter
+    // filters
     results = results.filter((t) => {
       const project = projectById.get(t.projectId);
       const matchesStatus = statusFilter === "All" || t.status === statusFilter;
@@ -108,15 +128,15 @@ function MyTasks() {
       const getValue = (task) => {
         switch (key) {
           case "key":
-            return task.key;
+            return task.key ?? "";
           case "title":
-            return task.title;
+            return task.title ?? "";
           case "project":
-            return projectById.get(task.projectId)?.name || "";
+            return projectById.get(task.projectId)?.name ?? "";
           case "status":
-            return task.status;
+            return task.status ?? "";
           case "firstResponse":
-            return task.firstResponse;
+            return task.firstResponse ?? "";
           default:
             return "";
         }
@@ -143,10 +163,7 @@ function MyTasks() {
   const handleSort = (key) => {
     setSortConfig((prev) => {
       if (prev.key === key) {
-        return {
-          key,
-          direction: prev.direction === "asc" ? "desc" : "asc",
-        };
+        return { key, direction: prev.direction === "asc" ? "desc" : "asc" };
       }
       return { key, direction: "asc" };
     });
@@ -169,10 +186,6 @@ function MyTasks() {
               Tasks assigned to you across all projects.
             </p>
           </div>
-          <span className="text-xs text-slate-500">
-            Logged in as{" "}
-            <span className="font-medium text-slate-700">{currentUser}</span>
-          </span>
         </div>
 
         {/* Filter bar */}
@@ -296,7 +309,7 @@ function MyTasks() {
                     <td className="px-3 py-2">
                       <div className="flex items-center space-x-2">
                         <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-xs text-slate-700">
-                          {task.assignee[0]}
+                          {String(task.assignee)[0]}
                         </div>
                         <span className="text-sm text-slate-700">
                           {task.assignee}
@@ -342,12 +355,12 @@ function MyTasks() {
   const project = projectById.get(task.projectId);
 
   return (
-    <div className="grid md:grid-cols-[2fr,1fr] gap-4">
+    <div className="grid md:grid-cols-[2fr,1fr] gap-1">
       {/* LEFT: description + tabs */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 md:p-1 flex flex-col">
         <button
           onClick={() => setSelectedTask(null)}
-          className="text-xs text-slate-500 hover:text-slate-700 mb-3"
+          className="self-start text-xs text-slate-500 hover:text-slate-700 mb-3"
         >
           ← Back to list
         </button>
@@ -422,13 +435,13 @@ function MyTasks() {
                 <DragDropFile
                   onFilesSelected={(files) => {
                     console.log("Files attached:", files);
-                    // You can save files to localStorage or state here
+                    // You can save files to sessionStorage or state here
                   }}
                 />
               </div>
 
               {/* Submit Button */}
-              <button className="px-4 py-2 bg-sky-600 text-white rounded-lg text-sm hover:bg-sky-700">
+              <button className="px-4 py-2 bg-sky-600 text-white rounded-sm text-sm hover:bg-sky-700">
                 Post Comment
               </button>
             </div>

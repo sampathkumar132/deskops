@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import users from "../../sampleData/users.json";
+import { setAuth } from "./auth";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -12,13 +13,22 @@ export default function Login() {
 
   // Redirect if already logged in
   useEffect(() => {
-    const auth = JSON.parse(localStorage.getItem("auth"));
-    if (auth?.role === "admin") navigate("/admin");
-    if (auth?.role === "user") navigate("/user");
+    const auth = JSON.parse(sessionStorage.getItem("auth") || "null");
+
+    if (auth && auth.role) {
+      if (auth.role === "admin") navigate("/admin");
+      else navigate("/user");
+    }
   }, [navigate]);
 
   const handleLogin = (e) => {
     e.preventDefault();
+    setError("");
+
+    if (!username.trim() || !password) {
+      setError("Please provide username and password");
+      return;
+    }
 
     const foundUser = users.find(
       (u) =>
@@ -31,16 +41,23 @@ export default function Login() {
       return;
     }
 
-    // Store clean normalized data
     const authData = {
       username: foundUser.username,
-      role: foundUser.role.toLowerCase().trim(),
+      role: (foundUser.role || "user").toLowerCase().trim(),
+      ts: Date.now(), // optional: when logged in
     };
 
-    localStorage.setItem("auth", JSON.stringify(authData));
-    localStorage.setItem("role", authData.role); // Sidebar uses this
+    // store via helper; wrap in try/catch just in case
+    try {
+      setAuth(authData);
+      console.log("Auth stored:", authData);
+    } catch (err) {
+      console.error("Failed to save auth:", err);
+      setError("Could not persist session. Check browser settings.");
+      return;
+    }
 
-    // Redirect based on role
+    // navigate after storing
     if (authData.role === "admin") navigate("/admin");
     else navigate("/user");
   };

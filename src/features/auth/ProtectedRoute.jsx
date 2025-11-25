@@ -2,7 +2,7 @@ import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
 function ProtectedRoute({ requiredRole }) {
-  const storedRole = localStorage.getItem("role"); // "admin" or "user"
+  const storedRole = sessionStorage.getItem("role"); // "admin" or "user"
 
   if (!storedRole) {
     return <Navigate to="/" replace />;
