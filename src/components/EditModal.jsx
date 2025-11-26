@@ -72,20 +72,23 @@ export default function EditModal({ open, employee, onClose, onSave }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden />
-      <div className="relative w-full max-w-xl mx-4 bg-white rounded-xl shadow-lg z-10">
-        <div className="flex items-center justify-between px-4 py-3 border-b">
-          <h3 className="text-lg font-medium text-slate-900">Edit</h3>
-          <button onClick={onClose} className="p-1 rounded-md hover:bg-slate-100" aria-label="Close">
-            <XMarkIcon className="w-5 h-5 text-slate-600" />
+      <div className="absolute inset-0 bg-black/60 dark:bg-black/40" onClick={onClose} aria-hidden />
+      <div className="relative w-full max-w-xl mx-4 bg-surface border border-border rounded-xl shadow-2xl z-10">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+          <h3 className="text-lg font-medium text-default">Edit</h3>
+          <button onClick={onClose} className="p-1 rounded-md hover:bg-white/10 dark:hover:bg-white/5 transition-colors" aria-label="Close">
+            <XMarkIcon className="w-5 h-5 text-muted" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-4 space-y-3 max-h-[70vh] overflow-auto">
-          {keys.length === 0 && <div className="text-sm text-slate-500">No editable fields</div>}
+          {keys.length === 0 && <div className="text-sm text-muted">No editable fields</div>}
 
           {keys.map((key) => {
             const value = form[key];
+            // Skip id field from editing
+            if (key === 'id') return null;
+            
             // render checkbox for booleans
             if (typeof value === "boolean") {
               return (
@@ -95,9 +98,9 @@ export default function EditModal({ open, employee, onClose, onSave }) {
                     type="checkbox"
                     checked={!!value}
                     onChange={(e) => handleChange(key, e.target.checked)}
-                    className="w-4 h-4"
+                    className="w-4 h-4 rounded border-border"
                   />
-                  <label htmlFor={key} className="text-sm text-slate-700 capitalize">{key}</label>
+                  <label htmlFor={key} className="text-sm text-default capitalize">{key}</label>
                 </div>
               );
             }
@@ -106,12 +109,12 @@ export default function EditModal({ open, employee, onClose, onSave }) {
             if (typeof employee?.[key] === "number") {
               return (
                 <div key={key}>
-                  <label className="block text-xs text-slate-500 capitalize">{key}</label>
+                  <label className="block text-xs text-muted uppercase tracking-wider mb-1 capitalize">{key}</label>
                   <input
                     type="number"
                     value={value ?? ""}
                     onChange={(e) => handleChange(key, e.target.value)}
-                    className="mt-1 w-full border border-slate-200 rounded px-3 py-2 text-sm"
+                    className="w-full bg-dark-surface dark:bg-surface border border-border rounded-lg px-3 py-2 text-sm text-default focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all"
                   />
                 </div>
               );
@@ -120,20 +123,21 @@ export default function EditModal({ open, employee, onClose, onSave }) {
             // default: text input
             return (
               <div key={key}>
-                <label className="block text-xs text-slate-500 capitalize">{key}</label>
+                <label className="block text-xs text-muted uppercase tracking-wider mb-1 capitalize">{key}</label>
                 <input
                   type="text"
                   value={value ?? ""}
                   onChange={(e) => handleChange(key, e.target.value)}
-                  className="mt-1 w-full border border-slate-200 rounded px-3 py-2 text-sm"
+                  className="w-full bg-dark-surface dark:bg-surface border border-border rounded-lg px-3 py-2 text-sm text-default focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all"
+                  required={key === 'name'}
                 />
               </div>
             );
           })}
 
-          <div className="flex justify-end space-x-2 pt-2">
-            <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg border bg-white text-sm">Cancel</button>
-            <button type="submit" className="px-4 py-2 rounded-lg bg-sky-600 text-white text-sm hover:bg-sky-700">Save</button>
+          <div className="flex justify-end space-x-2 pt-4">
+            <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg border border-border bg-surface text-default text-sm hover:bg-white/5 transition-colors">Cancel</button>
+            <button type="submit" className="px-4 py-2 rounded-lg bg-primary-600 text-white text-sm hover:bg-primary-700 shadow-lg transition-all">Save</button>
           </div>
         </form>
       </div>

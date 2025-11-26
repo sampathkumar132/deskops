@@ -1,1 +1,122 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+/* Define variables for both modes */
+:root {
+  /* Default (Dark Mode) */
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-border: #334155;
+  --color-text: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  
+  --color-primary-500: #0ea5e9;
+  --color-primary-600: #0284c7;
+}
+
+/* Light Mode Overrides */
+:root.light {
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;
+  --color-text: #0f172a;
+  --color-text-muted: #64748b;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    @apply antialiased transition-colors duration-300;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--color-text);
+    @apply font-bold tracking-tight;
+  }
+}
+
+/* Light Mode Tailwind Utility Overrides */
+:root.light .text-white {
+  color: #0f172a !important;
+}
+
+:root.light .text-slate-200,
+:root.light .text-slate-300 {
+  color: #334155 !important;
+}
+
+:root.light .text-slate-400 {
+  color: #64748b !important;
+}
+
+:root.light .text-slate-500 {
+  color: #475569 !important;
+}
+
+:root.light .bg-slate-700,
+:root.light .bg-slate-800 {
+  background-color: #e2e8f0 !important;
+}
+
+:root.light .bg-dark-surface {
+  background-color: #f8fafc !important;
+}
+
+:root.light .border-white\/5,
+:root.light .border-white\/10 {
+  border-color: rgba(15, 23, 42, 0.1) !important;
+}
+
+:root.light .bg-white\/5 {
+  background-color: rgba(15, 23, 42, 0.05) !important;
+}
+
+:root.light .hover\:bg-white\/5:hover {
+  background-color: rgba(15, 23, 42, 0.05) !important;
+}
+
+:root.light .divide-white\/5 > * + * {
+  border-color: rgba(15, 23, 42, 0.1) !important;
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply backdrop-blur-lg shadow-xl transition-colors duration-300;
+    background-color: color-mix(in srgb, var(--color-surface), transparent 20%);
+    border: 1px solid color-mix(in srgb, var(--color-border), transparent 50%);
+  }
+  
+  .glass-input {
+    @apply transition-all duration-200;
+    background-color: color-mix(in srgb, var(--color-surface), transparent 50%);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+  }
+  
+  .glass-input:focus {
+    border-color: var(--color-primary-500);
+    outline: 2px solid color-mix(in srgb, var(--color-primary-500), transparent 80%);
+  }
+  
+  .glass-input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .glass-button {
+    background-color: var(--color-primary-600);
+    color: white;
+    @apply hover:opacity-90 shadow-lg transition-all duration-200 active:scale-95;
+  }
+  
+  /* Helper for text colors using variables */
+  .text-default { color: var(--color-text); }
+  .text-muted { color: var(--color-text-muted); }
+  .bg-default { background-color: var(--color-bg); }
+  .bg-surface { background-color: var(--color-surface); }
+  .border-default { border-color: var(--color-border); }
+}

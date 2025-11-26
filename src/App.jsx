@@ -13,10 +13,6 @@ import Users from "./pages/ManageUsers";
 import UserDashboard from "./pages/UserDashboard";
 import MyTasks from "./pages/MyTasks";
 
-// Mock data
-import projects from "./sampleData/projects.json";
-import usersData from "./sampleData/users.json";
-
 function App() {
   return (
     <Routes>
@@ -30,16 +26,10 @@ function App() {
           <Route index element={<Navigate to="dashboard" replace />} />
 
           {/* /admin/dashboard */}
-          <Route
-            path="dashboard"
-            element={<Dashboard projects={projects} />}
-          />
+          <Route path="dashboard" element={<Dashboard />} />
 
           {/* /admin/users */}
-          <Route
-            path="users"
-            element={<Users usersData={usersData} />}
-          />
+          <Route path="users" element={<Users />} />
 
           {/* /admin/teams */}
           <Route path="teams" element={<div>Teams Page</div>} />
@@ -56,19 +46,13 @@ function App() {
           <Route index element={<Navigate to="dashboard" replace />} />
 
           {/* /user/dashboard */}
-          <Route
-            path="dashboard"
-            element={<UserDashboard projects={projects} />}
-          />
+          <Route path="dashboard" element={<UserDashboard />} />
 
           {/* /user/mytasks */}
           <Route path="mytasks" element={<MyTasks />} />
 
           {/* /user/projects */}
-          <Route
-            path="projects"
-            element={<div>Projects Page</div>}
-          />
+          <Route path="projects" element={<div>Projects Page</div>} />
 
           {/* /user/settings */}
           <Route path="settings" element={<div>Settings Page</div>} />

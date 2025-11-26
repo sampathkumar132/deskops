@@ -1,92 +1,86 @@
-// src/pages/MyTasks.jsx  (or wherever you keep it)
-import React, { useState, useMemo } from "react";
-import sampleProjects from "../sampleData/projects.json";
-import sampleProjectTasks from "../sampleData/subTasks.json";
+import React, { useState, useEffect, useMemo } from "react";
+import Button from "../components/ui/Button";
+import Card from "../components/ui/Card";
 import DragDropFile from "../components/DragDropFile";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { getAuth } from "../features/auth/auth";
 
-/* helpers for classes (unchanged) */
+const API_BASE = "http://localhost:3000";
+
 function statusChipClass(status) {
   switch (status) {
     case "WAITING FOR SUPPORT":
     case "WAITING FOR RESPONSE":
-      return "bg-slate-100 text-slate-800";
+      return "bg-slate-500/10 text-slate-400 border-slate-500/20";
     case "AWAITING APPROVAL":
-      return "bg-sky-100 text-sky-700";
+      return "bg-sky-500/10 text-sky-400 border-sky-500/20";
     case "APPROVED":
-      return "bg-emerald-100 text-emerald-700";
+      return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
     case "CLOSED":
-      return "bg-rose-100 text-rose-700";
+      return "bg-rose-500/10 text-rose-400 border-rose-500/20";
     default:
-      return "bg-slate-100 text-slate-700";
+      return "bg-slate-500/10 text-slate-400 border-slate-500/20";
   }
 }
 
 function priorityClass(priority) {
   switch (priority) {
-    case "High":
-      return "text-rose-600";
-    case "Medium":
-      return "text-amber-500";
-    case "Low":
-      return "text-slate-500";
-    default:
-      return "text-slate-500";
-  }
-}
-
-function safeParseJSON(raw, fallback) {
-  try {
-    if (!raw) return fallback;
-    return JSON.parse(raw);
-  } catch (err) {
-    console.warn("Failed to parse JSON from storage:", err);
-    return fallback;
+    case "High": return "text-rose-400";
+    case "Medium": return "text-amber-400";
+    case "Low": return "text-slate-400";
+    default: return "text-slate-400";
   }
 }
 
 function MyTasks() {
-  // selected task + UI state
   const [selectedTask, setSelectedTask] = useState(null);
-  const [sortConfig, setSortConfig] = useState({
-    key: "key",
-    direction: "asc",
-  });
+  const [sortConfig, setSortConfig] = useState({ key: "key", direction: "asc" });
   const [statusFilter, setStatusFilter] = useState("All");
   const [projectFilter, setProjectFilter] = useState("All");
   const [priorityFilter, setPriorityFilter] = useState("All");
   const [activeTab, setActiveTab] = useState("details");
+  
+  const [projects, setProjects] = useState([]);
+  const [projectTasks, setProjectTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // --- load auth safely (from your helper)
   const auth = getAuth();
   const currentUser = auth?.username ?? "Guest";
 
-  // --- load projects & tasks either from sessionStorage or fallback to sample data
-  const projects = useMemo(() => {
-    const raw = sessionStorage.getItem("projects");
-    return safeParseJSON(raw, sampleProjects);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [projectsRes, tasksRes] = await Promise.all([
+          fetch(`${API_BASE}/projects`),
+          fetch(`${API_BASE}/subTasks`)
+        ]);
+        
+        const projectsData = await projectsRes.json();
+        const tasksData = await tasksRes.json();
+        
+        setProjects(projectsData);
+        setProjectTasks(tasksData);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const projectTasks = useMemo(() => {
-    const raw = sessionStorage.getItem("projectTasks"); // use this key if you store tasks
-    return safeParseJSON(raw, sampleProjectTasks);
-  }, []);
-
-  // build lookup map for projects
   const projectById = useMemo(() => {
     const map = new Map();
     projects.forEach((p) => map.set(p.id, p));
     return map;
   }, [projects]);
 
-  // tasks assigned to current user
   const myTasks = useMemo(
-    () =>
-      projectTasks.filter((t) => String(t.assignee) === String(currentUser)),
+    () => projectTasks.filter((t) => String(t.assignee) === String(currentUser)),
     [projectTasks, currentUser]
   );
 
-  // filter options derived from myTasks
   const statusOptions = useMemo(
     () => ["All", ...Array.from(new Set(myTasks.map((t) => t.status)))],
     [myTasks]
@@ -106,39 +100,27 @@ function MyTasks() {
     [myTasks]
   );
 
-  // processed tasks: filtering + sorting
   const processedTasks = useMemo(() => {
     let results = [...myTasks];
 
-    // filters
     results = results.filter((t) => {
       const project = projectById.get(t.projectId);
       const matchesStatus = statusFilter === "All" || t.status === statusFilter;
-      const matchesProject =
-        projectFilter === "All" || (project && project.name === projectFilter);
-      const matchesPriority =
-        priorityFilter === "All" || t.priority === priorityFilter;
+      const matchesProject = projectFilter === "All" || (project && project.name === projectFilter);
+      const matchesPriority = priorityFilter === "All" || t.priority === priorityFilter;
       return matchesStatus && matchesProject && matchesPriority;
     });
 
-    // sort
     results.sort((a, b) => {
       const { key, direction } = sortConfig;
-
       const getValue = (task) => {
         switch (key) {
-          case "key":
-            return task.key ?? "";
-          case "title":
-            return task.title ?? "";
-          case "project":
-            return projectById.get(task.projectId)?.name ?? "";
-          case "status":
-            return task.status ?? "";
-          case "firstResponse":
-            return task.firstResponse ?? "";
-          default:
-            return "";
+          case "key": return task.key ?? "";
+          case "title": return task.title ?? "";
+          case "project": return projectById.get(task.projectId)?.name ?? "";
+          case "status": return task.status ?? "";
+          case "firstResponse": return task.firstResponse ?? "";
+          default: return "";
         }
       };
 
@@ -151,14 +133,7 @@ function MyTasks() {
     });
 
     return results;
-  }, [
-    myTasks,
-    projectById,
-    statusFilter,
-    projectFilter,
-    priorityFilter,
-    sortConfig,
-  ]);
+  }, [myTasks, projectById, statusFilter, projectFilter, priorityFilter, sortConfig]);
 
   const handleSort = (key) => {
     setSortConfig((prev) => {
@@ -174,69 +149,59 @@ function MyTasks() {
     return sortConfig.direction === "asc" ? "▲" : "▼";
   };
 
-  // ========= LIST VIEW =========
+  if (loading) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-slate-400">Loading tasks...</p>
+      </div>
+    );
+  }
+
   if (!selectedTask) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 md:p-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-lg font-semibold text-slate-900">My Tasks</h1>
-            <p className="text-xs text-slate-500">
-              Tasks assigned to you across all projects.
-            </p>
-          </div>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-white">My Tasks</h1>
+          <p className="text-slate-400 text-sm">Tasks assigned to you across all projects</p>
         </div>
 
-        {/* Filter bar */}
-        <div className="flex flex-wrap items-center gap-3 mb-3 text-xs">
-          <div className="flex items-center space-x-1">
-            <span className="text-slate-500">Status:</span>
+        {/* Filters */}
+        <div className="flex flex-wrap items-center gap-4 text-sm">
+          <div className="flex items-center gap-2">
+            <span className="text-slate-400">Status:</span>
             <select
-              className="border border-slate-200 rounded-md px-2 py-1 bg-white"
+              className="bg-dark-surface border border-white/10 rounded px-2 py-1 text-white focus:outline-none focus:border-primary-500"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
-              {statusOptions.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
+              {statusOptions.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
 
-          <div className="flex items-center space-x-1">
-            <span className="text-slate-500">Project:</span>
+          <div className="flex items-center gap-2">
+            <span className="text-slate-400">Project:</span>
             <select
-              className="border border-slate-200 rounded-md px-2 py-1 bg-white"
+              className="bg-dark-surface border border-white/10 rounded px-2 py-1 text-white focus:outline-none focus:border-primary-500"
               value={projectFilter}
               onChange={(e) => setProjectFilter(e.target.value)}
             >
-              {projectOptions.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
+              {projectOptions.map((p) => <option key={p} value={p}>{p}</option>)}
             </select>
           </div>
 
-          <div className="flex items-center space-x-1">
-            <span className="text-slate-500">Priority:</span>
+          <div className="flex items-center gap-2">
+            <span className="text-slate-400">Priority:</span>
             <select
-              className="border border-slate-200 rounded-md px-2 py-1 bg-white"
+              className="bg-dark-surface border border-white/10 rounded px-2 py-1 text-white focus:outline-none focus:border-primary-500"
               value={priorityFilter}
               onChange={(e) => setPriorityFilter(e.target.value)}
             >
-              {priorityOptions.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
+              {priorityOptions.map((p) => <option key={p} value={p}>{p}</option>)}
             </select>
           </div>
 
           <button
-            className="ml-auto text-[11px] text-slate-500 underline"
+            className="ml-auto text-xs text-primary-400 hover:text-primary-300 underline"
             onClick={() => {
               setStatusFilter("All");
               setProjectFilter("All");
@@ -247,270 +212,184 @@ function MyTasks() {
           </button>
         </div>
 
-        {/* Table */}
-        <div className="border border-slate-200 rounded-lg overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 text-left text-slate-500 text-xs">
-              <tr>
-                <th
-                  className="px-3 py-2 cursor-pointer select-none"
-                  onClick={() => handleSort("key")}
-                >
-                  Key {sortIndicator("key")}
-                </th>
-                <th
-                  className="px-3 py-2 cursor-pointer select-none"
-                  onClick={() => handleSort("title")}
-                >
-                  Title {sortIndicator("title")}
-                </th>
-                <th
-                  className="px-3 py-2 cursor-pointer select-none"
-                  onClick={() => handleSort("project")}
-                >
-                  Project {sortIndicator("project")}
-                </th>
-                <th className="px-3 py-2">Reporter</th>
-                <th className="px-3 py-2">Assignee</th>
-                <th
-                  className="px-3 py-2 cursor-pointer select-none"
-                  onClick={() => handleSort("status")}
-                >
-                  Status {sortIndicator("status")}
-                </th>
-                <th
-                  className="px-3 py-2 cursor-pointer select-none"
-                  onClick={() => handleSort("firstResponse")}
-                >
-                  First response {sortIndicator("firstResponse")}
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {processedTasks.map((task) => {
-                const project = projectById.get(task.projectId);
-                return (
-                  <tr
-                    key={task.id}
-                    className="bg-white hover:bg-slate-50 cursor-pointer"
-                    onClick={() => {
-                      setSelectedTask(task);
-                      setActiveTab("details");
-                    }}
-                  >
-                    <td className="px-3 py-2 text-slate-500">{task.key}</td>
-                    <td className="px-3 py-2 text-slate-900">{task.title}</td>
-                    <td className="px-3 py-2 text-slate-700 text-xs">
-                      {project ? project.name : "—"}
-                    </td>
-                    <td className="px-3 py-2 text-slate-700 text-sm">
-                      {task.reporter}
-                    </td>
-                    <td className="px-3 py-2">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-xs text-slate-700">
-                          {String(task.assignee)[0]}
-                        </div>
-                        <span className="text-sm text-slate-700">
-                          {task.assignee}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-3 py-2">
-                      <span
-                        className={
-                          "inline-flex px-2 py-0.5 rounded text-[11px] font-medium " +
-                          statusChipClass(task.status)
-                        }
-                      >
-                        {task.status}
-                      </span>
-                    </td>
-                    <td className="px-3 py-2 text-xs text-slate-600">
-                      {task.firstResponse}
-                    </td>
-                  </tr>
-                );
-              })}
-
-              {processedTasks.length === 0 && (
+        <Card className="overflow-hidden p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-white/5 text-slate-400 uppercase text-xs font-medium">
                 <tr>
-                  <td
-                    colSpan={7}
-                    className="px-4 py-6 text-center text-slate-500 text-sm"
-                  >
-                    No tasks match the current filters.
-                  </td>
+                  <th className="px-6 py-4 cursor-pointer hover:text-white" onClick={() => handleSort("key")}>Key {sortIndicator("key")}</th>
+                  <th className="px-6 py-4 cursor-pointer hover:text-white" onClick={() => handleSort("title")}>Title {sortIndicator("title")}</th>
+                  <th className="px-6 py-4 cursor-pointer hover:text-white" onClick={() => handleSort("project")}>Project {sortIndicator("project")}</th>
+                  <th className="px-6 py-4">Reporter</th>
+                  <th className="px-6 py-4">Assignee</th>
+                  <th className="px-6 py-4 cursor-pointer hover:text-white" onClick={() => handleSort("status")}>Status {sortIndicator("status")}</th>
+                  <th className="px-6 py-4 cursor-pointer hover:text-white" onClick={() => handleSort("firstResponse")}>First Response {sortIndicator("firstResponse")}</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {processedTasks.map((task) => {
+                  const project = projectById.get(task.projectId);
+                  return (
+                    <tr
+                      key={task.id}
+                      className="hover:bg-white/5 cursor-pointer transition-colors"
+                      onClick={() => {
+                        setSelectedTask(task);
+                        setActiveTab("details");
+                      }}
+                    >
+                      <td className="px-6 py-4 text-slate-400">{task.key}</td>
+                      <td className="px-6 py-4 font-medium text-white">{task.title}</td>
+                      <td className="px-6 py-4 text-slate-400 text-xs">{project ? project.name : "—"}</td>
+                      <td className="px-6 py-4 text-slate-400">{task.reporter}</td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-slate-700 flex items-center justify-center text-xs text-white">
+                            {String(task.assignee)[0]}
+                          </div>
+                          <span className="text-slate-300">{task.assignee}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex px-2 py-0.5 rounded text-[11px] font-medium border ${statusChipClass(task.status)}`}>
+                          {task.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-xs text-slate-500">{task.firstResponse}</td>
+                    </tr>
+                  );
+                })}
+                {processedTasks.length === 0 && (
+                  <tr>
+                    <td colSpan={7} className="px-6 py-8 text-center text-slate-500">No tasks match the current filters.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Card>
       </div>
     );
   }
 
-  // ========= DETAILS VIEW =========
   const task = selectedTask;
   const project = projectById.get(task.projectId);
 
   return (
-    <div className="grid md:grid-cols-[2fr,1fr] gap-1">
-      {/* LEFT: description + tabs */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 md:p-1 flex flex-col">
-        <button
-          onClick={() => setSelectedTask(null)}
-          className="self-start text-xs text-slate-500 hover:text-slate-700 mb-3"
-        >
-          ← Back to list
-        </button>
+    <div className="grid md:grid-cols-[2fr,1fr] gap-6">
+      <div className="space-y-6">
+        <Button variant="ghost" size="sm" onClick={() => setSelectedTask(null)} className="pl-0 hover:bg-transparent text-slate-400 hover:text-white">
+          <ArrowLeftIcon className="w-4 h-4 mr-2" />
+          Back to list
+        </Button>
 
-        {/* Title + meta */}
-        <div className="mb-3">
-          <p className="text-xs text-slate-500 mb-1">
-            {task.key} · {project ? project.name : "Unknown project"}
-          </p>
-          <h1 className="text-xl font-semibold text-slate-900">{task.title}</h1>
-        </div>
+        <Card>
+          <div className="mb-6">
+            <p className="text-xs text-slate-500 mb-2">
+              {task.key} · {project ? project.name : "Unknown project"}
+            </p>
+            <h1 className="text-2xl font-bold text-white">{task.title}</h1>
+          </div>
 
-        {/* Tabs */}
-        <div className="border-b border-slate-200 mb-2">
-          {["details", "comments", "history", "worklog"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`text-xs px-3 py-2 border-b-2 -mb-px capitalize ${
-                activeTab === tab
-                  ? "border-sky-500 text-sky-600"
-                  : "border-transparent text-slate-500 hover:text-slate-700"
-              }`}
-            >
-              {tab === "worklog" ? "Work log" : tab}
-            </button>
-          ))}
-        </div>
+          <div className="flex border-b border-white/10 mb-6">
+            {["details", "comments", "history", "worklog"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                  activeTab === tab
+                    ? "border-primary-500 text-primary-400"
+                    : "border-transparent text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                {tab === "worklog" ? "Work log" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            ))}
+          </div>
 
-        {/* Tab content */}
-        <div className="flex-1">
-          {activeTab === "details" && (
-            <>
-              <div className="mb-4">
-                <h2 className="text-sm font-semibold text-slate-800 mb-1">
-                  Description
-                </h2>
-                <p className="text-sm text-slate-700 whitespace-pre-line">
-                  {task.description}
-                </p>
+          <div className="min-h-[200px]">
+            {activeTab === "details" && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-sm font-semibold text-white mb-2">Description</h2>
+                  <p className="text-sm text-slate-300 whitespace-pre-line leading-relaxed">
+                    {task.description}
+                  </p>
+                </div>
+                <div>
+                  <h2 className="text-sm font-semibold text-white mb-2">Environment</h2>
+                  <p className="text-sm text-slate-300 bg-dark-surface p-3 rounded-lg border border-white/5">
+                    {task.environment || "None"}
+                  </p>
+                </div>
               </div>
+            )}
 
-              <div className="mb-4">
-                <h2 className="text-sm font-semibold text-slate-800 mb-1">
-                  Environment
-                </h2>
-                <p className="text-sm text-slate-700">
-                  {task.environment || "None"}
-                </p>
-              </div>
-            </>
-          )}
-
-          {activeTab === "comments" && (
-            <div className="space-y-4">
-              {/* Comment Input */}
-              <div>
+            {activeTab === "comments" && (
+              <div className="space-y-4">
                 <textarea
-                  className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-1 focus:ring-sky-500 focus:border-sky-500"
+                  className="w-full bg-dark-surface border border-white/10 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
                   rows="3"
                   placeholder="Add a comment..."
                 ></textarea>
+                
+                <div>
+                  <h3 className="text-xs font-semibold text-slate-400 mb-2">Attach files</h3>
+                  <DragDropFile onFilesSelected={(files) => console.log("Files attached:", files)} />
+                </div>
+
+                <div className="flex justify-end">
+                  <Button size="sm">Post Comment</Button>
+                </div>
               </div>
+            )}
 
-              {/* Attach Files */}
-              <div>
-                <h3 className="text-xs font-semibold text-slate-600 mb-1">
-                  Attach files
-                </h3>
-
-                {/* DragDropFile Component */}
-                <DragDropFile
-                  onFilesSelected={(files) => {
-                    console.log("Files attached:", files);
-                    // You can save files to sessionStorage or state here
-                  }}
-                />
+            {(activeTab === "history" || activeTab === "worklog") && (
+              <div className="text-center py-8 text-slate-500 text-sm">
+                No entries found.
               </div>
-
-              {/* Submit Button */}
-              <button className="px-4 py-2 bg-sky-600 text-white rounded-sm text-sm hover:bg-sky-700">
-                Post Comment
-              </button>
-            </div>
-          )}
-
-          {activeTab === "history" && (
-            <p className="text-sm text-slate-500">
-              History / status changes can go here.
-            </p>
-          )}
-
-          {activeTab === "worklog" && (
-            <p className="text-sm text-slate-500">
-              Work log entries can go here.
-            </p>
-          )}
-        </div>
+            )}
+          </div>
+        </Card>
       </div>
 
-      {/* RIGHT: side details panel */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 md:p-6 space-y-4">
-        <div>
-          <h3 className="text-xs font-semibold text-slate-500 uppercase mb-2">
-            Status
-          </h3>
-          <span
-            className={
-              "inline-flex px-2 py-1 rounded text-[11px] font-medium " +
-              statusChipClass(task.status)
-            }
-          >
-            {task.status}
-          </span>
-        </div>
-
-        <div>
-          <h3 className="text-xs font-semibold text-slate-500 uppercase mb-2">
-            Assignee
-          </h3>
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-sm text-slate-700">
-              {task.assignee[0]}
-            </div>
-            <span className="text-sm text-slate-800">{task.assignee}</span>
+      <div className="space-y-6">
+        <div className="h-10 md:block hidden" /> {/* Spacer for alignment */}
+        <Card className="space-y-6">
+          <div>
+            <h3 className="text-xs font-semibold text-slate-500 uppercase mb-2">Status</h3>
+            <span className={`inline-flex px-2 py-1 rounded text-xs font-medium border ${statusChipClass(task.status)}`}>
+              {task.status}
+            </span>
           </div>
-        </div>
 
-        <div>
-          <h3 className="text-xs font-semibold text-slate-500 uppercase mb-2">
-            Reporter
-          </h3>
-          <p className="text-sm text-slate-800">{task.reporter}</p>
-        </div>
+          <div>
+            <h3 className="text-xs font-semibold text-slate-500 uppercase mb-2">Assignee</h3>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-sm text-white">
+                {task.assignee[0]}
+              </div>
+              <span className="text-sm text-slate-200">{task.assignee}</span>
+            </div>
+          </div>
 
-        <div>
-          <h3 className="text-xs font-semibold text-slate-500 uppercase mb-2">
-            Priority
-          </h3>
-          <p className={"text-sm font-medium " + priorityClass(task.priority)}>
-            {task.priority}
-          </p>
-        </div>
+          <div>
+            <h3 className="text-xs font-semibold text-slate-500 uppercase mb-2">Reporter</h3>
+            <p className="text-sm text-slate-200">{task.reporter}</p>
+          </div>
 
-        <div>
-          <h3 className="text-xs font-semibold text-slate-500 uppercase mb-2">
-            First response
-          </h3>
-          <p className="text-sm text-slate-800">{task.firstResponse}</p>
-        </div>
+          <div>
+            <h3 className="text-xs font-semibold text-slate-500 uppercase mb-2">Priority</h3>
+            <p className={`text-sm font-medium ${priorityClass(task.priority)}`}>
+              {task.priority}
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-semibold text-slate-500 uppercase mb-2">First Response</h3>
+            <p className="text-sm text-slate-200">{task.firstResponse}</p>
+          </div>
+        </Card>
       </div>
     </div>
   );

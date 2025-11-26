@@ -1,0 +1,444 @@
+{
+  "adminSidebar": [
+    {
+      "label": "Dashboard",
+      "icon": "HomeIcon",
+      "path": "/admin/dashboard"
+    },
+    {
+      "label": "Manage Users",
+      "icon": "UsersIcon",
+      "path": "/admin/users"
+    },
+    {
+      "label": "Teams",
+      "icon": "UserGroupIcon",
+      "path": "/admin/teams"
+    },
+    {
+      "label": "Settings",
+      "icon": "Cog6ToothIcon",
+      "path": "/admin/settings"
+    }
+  ],
+
+  "userSidebar": [
+    {
+      "label": "My Dashboard",
+      "icon": "HomeIcon",
+      "path": "/user"
+    },
+    {
+      "label": "All Projects",
+      "icon": "UserGroupIcon",
+      "path": "/user/projects"
+    },
+    {
+      "label": "My Tasks",
+      "icon": "UsersIcon",
+      "path": "/user/mytasks"
+    },
+    {
+      "label": "Profile Settings",
+      "icon": "Cog6ToothIcon",
+      "path": "/user/settings"
+    }
+  ],
+
+  "users": [
+    {
+      "username": "admin",
+      "password": "root",
+      "role": "admin"
+    },
+    {
+      "username": "sampath",
+      "password": "root",
+      "role": "user"
+    }
+  ],
+
+  "subTasks": [
+    {
+      "id": 1,
+      "key": "P-1",
+      "projectId": 1,
+      "title": "Define icon style guidelines",
+      "reporter": "Product Owner",
+      "assignee": "sid",
+      "status": "WAITING FOR SUPPORT",
+      "firstResponse": "14m",
+      "priority": "Medium",
+      "description": "As a design system user, I need clear icon style rules so that new icons are consistent across the app.",
+      "environment": "Design tools / Figma"
+    },
+    {
+      "id": 2,
+      "key": "P-2",
+      "projectId": 1,
+      "title": "Prepare export of Iconly Pro v1",
+      "reporter": "Design Lead",
+      "assignee": "sanjay",
+      "status": "WAITING FOR RESPONSE",
+      "firstResponse": "20m",
+      "priority": "Low",
+      "description": "Export all icons to SVG and PNG so that devs can integrate them into the UI.",
+      "environment": "MacOS, Figma plugin"
+    },
+    {
+      "id": 3,
+      "key": "P-3",
+      "projectId": 2,
+      "title": "Collect redesign requirements",
+      "reporter": "Marketing",
+      "assignee": "Alex",
+      "status": "WAITING FOR SUPPORT",
+      "firstResponse": "1h 14m",
+      "priority": "Medium",
+      "description": "Gather requirements for the Skale landing page redesign.",
+      "environment": "Web, internal docs"
+    },
+    {
+      "id": 4,
+      "key": "P-4",
+      "projectId": 2,
+      "title": "Create new homepage wireframes",
+      "reporter": "Product Owner",
+      "assignee": "sid",
+      "status": "WAITING FOR RESPONSE",
+      "firstResponse": "20m",
+      "priority": "High",
+      "description": "Design wireframes for the new homepage to highlight main value props.",
+      "environment": "Figma"
+    },
+    {
+      "id": 5,
+      "key": "P-5",
+      "projectId": 3,
+      "title": "Map style exploration",
+      "reporter": "UX Team",
+      "assignee": "sampath",
+      "status": "AWAITING APPROVAL",
+      "firstResponse": "2h 18m",
+      "priority": "Low",
+      "description": "Explore alternative map color schemes to improve readability.",
+      "environment": "Localy staging app"
+    },
+    {
+      "id": 6,
+      "key": "P-6",
+      "projectId": 3,
+      "title": "Implement map filters",
+      "reporter": "Product Owner",
+      "assignee": "sampath",
+      "status": "AWAITING APPROVAL",
+      "firstResponse": "4h 3m",
+      "priority": "High",
+      "description": "Add filtering by region and category to Localy 2.0.",
+      "environment": "Web, Chrome latest"
+    },
+    {
+      "id": 7,
+      "key": "P-7",
+      "projectId": 4,
+      "title": "Storyboard icon animations",
+      "reporter": "Design Lead",
+      "assignee": "sampath",
+      "status": "APPROVED",
+      "firstResponse": "1h",
+      "priority": "Medium",
+      "description": "Create a storyboard for the main icon animation sequences.",
+      "environment": "Whiteboard, design tools"
+    },
+    {
+      "id": 8,
+      "key": "P-8",
+      "projectId": 4,
+      "title": "Prototype micro animations",
+      "reporter": "Product Owner",
+      "assignee": "sampath",
+      "status": "APPROVED",
+      "firstResponse": "2h",
+      "priority": "Medium",
+      "description": "Build small animation prototypes to test in the UI.",
+      "environment": "Iconly Animation playground"
+    },
+    {
+      "id": 9,
+      "key": "P-9",
+      "projectId": 5,
+      "title": "Design Quotient dashboards",
+      "reporter": "PM",
+      "assignee": "sampath",
+      "status": "WAITING FOR SUPPORT",
+      "firstResponse": "1h 32m",
+      "priority": "High",
+      "description": "Design reporting dashboards for sales managers.",
+      "environment": "Quotient staging"
+    },
+    {
+      "id": 10,
+      "key": "P-10",
+      "projectId": 5,
+      "title": "Clean up old reports",
+      "reporter": "Support",
+      "assignee": "sampath",
+      "status": "CLOSED",
+      "firstResponse": "1h",
+      "priority": "Low",
+      "description": "Archive unused or outdated sales reports.",
+      "environment": "Quotient admin"
+    }
+  ],
+
+  "projects": [
+    {
+      "id": 1,
+      "name": "Iconly Pro",
+      "url": "iconly.pro",
+      "status": "Done",
+      "about": "Icon design in various styles.",
+      "members": 5,
+      "progress": 100
+    },
+    {
+      "id": 2,
+      "name": "Skale",
+      "url": "skale.space",
+      "status": "In Progress",
+      "about": "Redesign the Skale website.",
+      "members": 4,
+      "progress": 90
+    },
+    {
+      "id": 3,
+      "name": "Localy 2.0",
+      "url": "localy.io",
+      "status": "Paused",
+      "about": "Minimal maps in 5 styles.",
+      "members": 3,
+      "progress": 50
+    },
+    {
+      "id": 4,
+      "name": "Iconly Animation",
+      "url": "iconly.io",
+      "status": "In Progress",
+      "about": "Animated icon set.",
+      "members": 6,
+      "progress": 80
+    },
+    {
+      "id": 5,
+      "name": "Quotient",
+      "url": "quotient.co",
+      "status": "Backlog",
+      "about": "Web-based sales doc management.",
+      "members": 2,
+      "progress": 0
+    }
+  ],
+
+  "employees": [
+    {
+      "id": 1,
+      "name": "Edward Perry",
+      "age": 25,
+      "joinDate": "16/07/2025",
+      "department": "Finance",
+      "fullTime": true
+    },
+    {
+      "id": 2,
+      "name": "Josephine Drake",
+      "age": 36,
+      "joinDate": "16/07/2025",
+      "department": "Market",
+      "fullTime": false
+    },
+    {
+      "id": 3,
+      "name": "Cody Phillips",
+      "age": 19,
+      "joinDate": "16/07/2025",
+      "department": "Development",
+      "fullTime": true
+    },
+    {
+      "id": 4,
+      "name": "Amelia Foster",
+      "age": 29,
+      "joinDate": "02/08/2025",
+      "department": "HR",
+      "fullTime": true
+    },
+    {
+      "id": 5,
+      "name": "Liam Henderson",
+      "age": 33,
+      "joinDate": "11/06/2025",
+      "department": "Finance",
+      "fullTime": false
+    },
+    {
+      "id": 6,
+      "name": "Sophie Turner",
+      "age": 27,
+      "joinDate": "25/05/2025",
+      "department": "Design",
+      "fullTime": true
+    },
+    {
+      "id": 7,
+      "name": "Marcus Lee",
+      "age": 41,
+      "joinDate": "08/02/2025",
+      "department": "Operations",
+      "fullTime": true
+    },
+    {
+      "id": 8,
+      "name": "Hannah Collins",
+      "age": 23,
+      "joinDate": "04/09/2025",
+      "department": "Development",
+      "fullTime": false
+    },
+    {
+      "id": 9,
+      "name": "Joshua Carter",
+      "age": 38,
+      "joinDate": "22/04/2025",
+      "department": "Market",
+      "fullTime": true
+    },
+    {
+      "id": 10,
+      "name": "Ava Mitchell",
+      "age": 31,
+      "joinDate": "13/03/2025",
+      "department": "Support",
+      "fullTime": true
+    },
+    {
+      "id": 11,
+      "name": "Noah Ramirez",
+      "age": 26,
+      "joinDate": "18/07/2025",
+      "department": "Development",
+      "fullTime": true
+    },
+    {
+      "id": 12,
+      "name": "Lily Armstrong",
+      "age": 30,
+      "joinDate": "07/01/2025",
+      "department": "HR",
+      "fullTime": false
+    },
+    {
+      "id": 13,
+      "name": "Ethan Brooks",
+      "age": 22,
+      "joinDate": "29/06/2025",
+      "department": "Design",
+      "fullTime": true
+    },
+    {
+      "id": 14,
+      "name": "Natalie Scott",
+      "age": 35,
+      "joinDate": "14/05/2025",
+      "department": "Finance",
+      "fullTime": true
+    },
+    {
+      "id": 15,
+      "name": "Oliver Walsh",
+      "age": 28,
+      "joinDate": "01/03/2025",
+      "department": "Support",
+      "fullTime": false
+    },
+    {
+      "id": 16,
+      "name": "Grace Powell",
+      "age": 24,
+      "joinDate": "09/02/2025",
+      "department": "Development",
+      "fullTime": true
+    },
+    {
+      "id": 17,
+      "name": "Henry Adams",
+      "age": 40,
+      "joinDate": "19/01/2025",
+      "department": "Operations",
+      "fullTime": true
+    },
+    {
+      "id": 18,
+      "name": "Ella Morgan",
+      "age": 32,
+      "joinDate": "05/04/2025",
+      "department": "Market",
+      "fullTime": false
+    },
+    {
+      "id": 19,
+      "name": "Samuel King",
+      "age": 21,
+      "joinDate": "30/07/2025",
+      "department": "Design",
+      "fullTime": true
+    },
+    {
+      "id": 20,
+      "name": "Victoria Lane",
+      "age": 37,
+      "joinDate": "23/03/2025",
+      "department": "HR",
+      "fullTime": true
+    },
+    {
+      "id": 21,
+      "name": "Daniel Harris",
+      "age": 34,
+      "joinDate": "12/06/2025",
+      "department": "Finance",
+      "fullTime": false
+    },
+    {
+      "id": 22,
+      "name": "Zoe Patterson",
+      "age": 20,
+      "joinDate": "01/08/2025",
+      "department": "Development",
+      "fullTime": true
+    },
+    {
+      "id": 23,
+      "name": "Michael Turner",
+      "age": 42,
+      "joinDate": "10/02/2025",
+      "department": "Operations",
+      "fullTime": true
+    },
+    {
+      "id": 24,
+      "name": "Chloe Bennett",
+      "age": 27,
+      "joinDate": "15/06/2025",
+      "department": "Support",
+      "fullTime": false
+    },
+    {
+      "id": 25,
+      "name": "Ryan Matthews",
+      "age": 33,
+      "joinDate": "28/04/2025",
+      "department": "Market",
+      "fullTime": true
+    }
+  ]
+}

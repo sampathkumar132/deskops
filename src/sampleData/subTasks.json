@@ -1,11 +1,11 @@
 [
     {
         "id": 1,
-        "key": "PRJ-1",
+        "key": "P-1",
         "projectId": 1,
         "title": "Define icon style guidelines",
         "reporter": "Product Owner",
-        "assignee": "sampath",
+        "assignee": "sid",
         "status": "WAITING FOR SUPPORT",
         "firstResponse": "14m",
         "priority": "Medium",
@@ -14,11 +14,11 @@
     },
     {
         "id": 2,
-        "key": "PRJ-2",
+        "key": "P-2",
         "projectId": 1,
         "title": "Prepare export of Iconly Pro v1",
         "reporter": "Design Lead",
-        "assignee": "sampath",
+        "assignee": "sanjay",
         "status": "WAITING FOR RESPONSE",
         "firstResponse": "20m",
         "priority": "Low",
@@ -27,7 +27,7 @@
     },
     {
         "id": 3,
-        "key": "PRJ-3",
+        "key": "P-3",
         "projectId": 2,
         "title": "Collect redesign requirements",
         "reporter": "Marketing",
@@ -40,11 +40,11 @@
     },
     {
         "id": 4,
-        "key": "PRJ-4",
+        "key": "P-4",
         "projectId": 2,
         "title": "Create new homepage wireframes",
         "reporter": "Product Owner",
-        "assignee": "sampath",
+        "assignee": "sid",
         "status": "WAITING FOR RESPONSE",
         "firstResponse": "20m",
         "priority": "High",
@@ -53,7 +53,7 @@
     },
     {
         "id": 5,
-        "key": "PRJ-5",
+        "key": "P-5",
         "projectId": 3,
         "title": "Map style exploration",
         "reporter": "UX Team",
@@ -66,7 +66,7 @@
     },
     {
         "id": 6,
-        "key": "PRJ-6",
+        "key": "P-6",
         "projectId": 3,
         "title": "Implement map filters",
         "reporter": "Product Owner",
@@ -79,7 +79,7 @@
     },
     {
         "id": 7,
-        "key": "PRJ-7",
+        "key": "P-7",
         "projectId": 4,
         "title": "Storyboard icon animations",
         "reporter": "Design Lead",
@@ -92,7 +92,7 @@
     },
     {
         "id": 8,
-        "key": "PRJ-8",
+        "key": "P-8",
         "projectId": 4,
         "title": "Prototype micro animations",
         "reporter": "Product Owner",
@@ -105,7 +105,7 @@
     },
     {
         "id": 9,
-        "key": "PRJ-9",
+        "key": "P-9",
         "projectId": 5,
         "title": "Design Quotient dashboards",
         "reporter": "PM",
@@ -118,7 +118,7 @@
     },
     {
         "id": 10,
-        "key": "PRJ-10",
+        "key": "P-10",
         "projectId": 5,
         "title": "Clean up old reports",
         "reporter": "Support",
