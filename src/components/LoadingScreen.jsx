@@ -1,6 +1,3 @@
-// LoadingScreen.jsx
-import React from "react";
-
 export default function LoadingScreen({ progress = null, message = "Uploading..." }) {
   // progress is optional (0..100). If null, show indefinite spinner.
   return (
